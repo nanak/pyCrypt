@@ -1,24 +1,53 @@
-# from base64 import b64encode
-from M2Crypto import RSA  
-# import os          
+import socket
+import threading
+from M2Crypto import RSA
 
-def generateKey():
-    key = RSA.gen_key(1024, 65537)
-    key.save_key("my.key", cipher=None)
-    key.save_pub_key("my.key.pub")
-    
-    # raw_key = key.pub()[1]
-    # b64key = b64encode(raw_key)
+class Server(threading.Thread):
 
-    # username = os.getlogin()
-    # hostname = os.uname()[1]
-    # keystring = 'ssh-rsa %s %s@%s' % (b64key, username, hostname)
+    # generate session key
+    def genSessionKey(self):
+        pass
 
-    # with open(os.getenv('HOME')+'/.ssh/id_rsa.pub') as keyfile:
-    #     keyfile.write(keystring)
+
+    # define the behaviour for the thread
+    def run(self):
+        active = True
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = ('localhost', 10000)
+        sock.bind(server_address)
+
+        while active:
+            connection, client_address = sock.accept()
+            print "waiting for connection"
+
+            try:
+                print "connection from", client_address
+
+                while True:
+                    data = connection.recv(16)
+                    print "received '%s'" % data
+                    if data.startswith("!key"):
+                        if data:
+                            print "sending session key to the client"
+                            connection.sendall("test") #TODO: generate session key and encrypt it with the received private key
+                        else:
+                            print "no more data from", client_address
+                            break
+                    elif data.startswith("!crypt"):
+                        pass
+                    elif data.startswith("!plain"):
+                        pass
+                    else:
+                        pass
+            
+            finally:
+                connection.close()
+
 
 def main():
-    print generateKey()
+    s = Server()
+    s.start()
 
 if __name__ == '__main__':
     main()
+
