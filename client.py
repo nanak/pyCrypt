@@ -34,8 +34,11 @@ class Client(threading.Thread):
         decryptedMessage = cipher.decrypt(b64decode(message))
         return decryptedMessage
     
-    def main(self):
-        
+
+def main():
+    # c = Client()
+    # c.start()
+    pass
     
-    if__name__='__main__':
-        main() 
+if __name__ == '__main__':
+    main() 
