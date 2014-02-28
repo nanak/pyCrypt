@@ -6,6 +6,7 @@ import random
 
 from Crypto.Cipher.AES import AESCipher
 
+# socket tut: http://pymotw.com/2/socket/tcp.html
 
 class Server(threading.Thread):
 
