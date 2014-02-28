@@ -1,6 +1,8 @@
 from base64 import b64decode
 import socket
 import threading
+import string
+import random
 
 from Crypto.Cipher.AES import AESCipher
 
@@ -8,6 +10,9 @@ from Crypto.Cipher.AES import AESCipher
 class Server(threading.Thread):
 
     sessionKey = ""
+
+    def genSessionKey(self, size=6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for x in range(size))
 
     # encryptes the message with AES
     # cipher-text is the sessionkey
