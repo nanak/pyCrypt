@@ -1,28 +1,35 @@
 import socket
 import threading
+
+from Crypto.Cipher.AES import AESCipher
+from Crypto.PublicKey import RSA
+from base64 import b64decode
+
+
 # from base64 import b64encode
-from M2Crypto import RSA
-
-keyFilename = "my.key"
-pubKeyFilename = "my.key.pub"
-
 class Client(threading.Thread):
 
+    __publicKey = ""
+    __privateKey = ""
+    __sock2serv = ""
+    __sessionKey = ""
+
     # generates a public/private keypair
-    def generateKey(self):
-        key = RSA.gen_key(1024, 65537)
-        key.save_key(keyFilename, cipher=None)
-        key.save_pub_key(pubKeyFilename)
-        # raw_key = key.pub()[1]
-        # b64key = b64encode(raw_key)
+    def generateKey(self,bits=1024):
+        rsaObject = RSA.generate(bits)
+        self.__publicKey = rsaObject.publickey().exportKey("PEM")
+        self.__privateKey = rsaObject.exportKey("PEM")
 
-        # username = os.getlogin()
-        # hostname = os.uname()[1]
-        # keystring = 'ssh-rsa %s %s@%s' % (b64key, username, hostname)
 
-        # with open(os.getenv('HOME')+'/.ssh/id_rsa.pub') as keyfile:
-        #     keyfile.write(keystring)
+    def encrypt(self, message) :
+        cipher = AESCipher.__init__(self, self.__sessionKey)
+        encrypted = cipher.encrypt(message)
+        return encrypted.encode('base64')
 
-    # read a file and return it as string
-    def readFile(self, filename):
-        return open(filename, 'r').read()
+    def decrypt(self, message) :
+        cipher = AESCipher.__init__(self, self.__sessionKey)
+        decryptedMessage = cipher.decrypt(b64decode(message))
+        return decryptedMessage
+    
+    def 
+        
