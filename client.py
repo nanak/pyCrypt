@@ -23,16 +23,22 @@ class Client(threading.Thread):
     # encryptes the message with AES
     # cipher-text is the sessionkey
     def encrypt(self, message) :
-        cipher = AESCipher.__init__(self, self.sessionKey)
+        cipher = AESCipher.__init__(self.sessionKey)
         encrypted = cipher.encrypt(message)
         return encrypted.encode('base64')
 
     # decryptes the message with AES
     # cipher-text is the sessionkey
     def decrypt(self, message) :
-        cipher = AESCipher.__init__(self, self.sessionKey)
+        cipher = AESCipher.__init__(self.sessionKey)
         decryptedMessage = cipher.decrypt(b64decode(message))
         return decryptedMessage
+    
+    def decryptSessionKey(self, sessionKeyEncrypted):
+        rsaObjectImpl = RSA.RSAImplementation.__init__()
+        rsaObjectImpl.importKey(self.publicKey)
+        rsaObject = RSA._RSAobj.__init__(rsaObjectImpl, self.privateKey)
+        self.sessionKey = rsaObject.decrypt(sessionKeyEncrypted)        
     
 
 def main():

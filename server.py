@@ -1,14 +1,28 @@
+from base64 import b64decode
 import socket
 import threading
-from M2Crypto import RSA
+
+from Crypto.Cipher.AES import AESCipher
+
 
 class Server(threading.Thread):
 
-    # generate session key
-    def genSessionKey(self):
-        pass
+    sessionKey = ""
 
+    # encryptes the message with AES
+    # cipher-text is the sessionkey
+    def encrypt(self, message) :
+        cipher = AESCipher.__init__(self, self.sessionKey)
+        encrypted = cipher.encrypt(message)
+        return encrypted.encode('base64')
 
+    # decryptes the message with AES
+    # cipher-text is the sessionkey
+    def decrypt(self, message) :
+        cipher = AESCipher.__init__(self, self.sessionKey)
+        decryptedMessage = cipher.decrypt(b64decode(message))
+        return decryptedMessage
+    
     # define the behaviour for the thread
     def run(self):
         active = True
