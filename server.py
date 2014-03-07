@@ -35,21 +35,23 @@ class Server(threading.Thread):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_address = ('localhost', 10000)
         sock.bind(server_address)
+        # Listen for incoming connections
+        sock.listen(1)
 
         while active:
-            connection, client_address = sock.accept()
             print "waiting for connection"
+            connection, client_address = sock.accept()
 
             try:
                 print "connection from", client_address
 
                 while True:
-                    data = connection.recv(16)
+                    data = connection.recv(1024)
                     print "received '%s'" % data
                     if data.startswith("!key"):
                         if data:
                             print "sending session key to the client"
-                            connection.sendall("test") #TODO: generate session key and encrypt it with the received private key
+                            connection.sendall(self.genSessionKey()) #TODO: generate session key and encrypt it with the received private key
                         else:
                             print "no more data from", client_address
                             break

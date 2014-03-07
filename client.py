@@ -6,7 +6,7 @@ from Crypto.PublicKey import RSA
 from base64 import b64decode
 from sys import argv
 from sys import exit
-from logilab.common.shellutils import RawInput
+# from logilab.common.shellutils import RawInput
 
 
 # from base64 import b64encode
@@ -47,24 +47,30 @@ class Client(threading.Thread):
     
     # define the behaviour for the thread
     def run(self):
-        if(len(argv) >= 3):
+        # if(len(argv) >= 3):
+        if True:
             active = True
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_address = (argv[1], argv[2])
-            sock.bind(server_address)
+            # server_address = (argv[1], argv[2])
+            server_address = ("127.0.0.1", 10000)
+            # sock.bind(server_address)
             sock.connect(server_address)
-            print "Connection established to: \n" + argv[1] + ":" + argv[2]
+            # print "Connection established to: \n" + argv[1] + ":" + argv[2]
+            print "Connection established to: \n" + "127.0.0.1" + ":" + "10000"
             self.generateKey()
             print "Public and Private-key generation successful! \n"
+            # sock.send("!key%s"  % self.publicKey)
             sock.send(self.publicKey)
             print "Public-key sent to server, waiting for session-key ... \n"
-            firstMessage = sock.recv()
+            firstMessage = sock.recv(1024)
+            print firstMessage
             self.decryptSessionKey(firstMessage)
             print "Session-key was decrypted successfully: " + self.sessionKey
         
             while active:
                 try:
-                    command = raw_input("Message: ")
+                    # command = raw_input("Message: ")
+                    command = "test"
                     command = command.lower().split(' ', 1)
                     ctrl = command.pop(0);
                     message = command.pop(0)
@@ -73,7 +79,7 @@ class Client(threading.Thread):
                         sock.send(encryptedMessage)
                     elif (ctrl is "!plain"):
                         sock.send(message)
-                    data = connection.recv(16)
+                    data = connection.recv(1024)
                     print "received '%s'" % data
                     if data.startswith("!key"):
                         if data:
@@ -82,23 +88,23 @@ class Client(threading.Thread):
                     else:
                             print "no more data from", client_address
                             break
-                    elif data.startswith("!crypt"):
-                        pass
-                    elif data.startswith("!plain"):
-                        pass
-                    else:
-                        pass
+                    # elif data.startswith("!crypt"):
+                    #     pass
+                    # elif data.startswith("!plain"):
+                    #     pass
+                    # else:
+                    #     pass
             
                 finally:
                     connection.close()
                     exit()
-    elif :
-        print "Please enter the server ip and port as 2 separate parameters and restart the programm! \n"
+    # elif :
+    #     print "Please enter the server ip and port as 2 separate parameters and restart the programm! \n"
 
 def main():
-    # c = Client()
-    # c.start()
-    pass
+    c = Client()
+    c.start()
+    # pass
     
 if __name__ == '__main__':
     main() 
