@@ -40,8 +40,7 @@ class Client(threading.Thread):
     # decryptes the session key which is reveived from the server
     # decryption is done with private-key (RSA)
     def decryptSessionKey(self, sessionKeyEncrypted):
-        rsaObjectImpl = RSA.RSAImplementation.__init__()
-        rsaObjectImpl.importKey(self.publicKey)
+        rsaObjectImpl = RSA.RSAImplementation.importKey(self.publicKey)
         rsaObject = RSA._RSAobj.__init__(rsaObjectImpl, self.privateKey)
         self.sessionKey = rsaObject.decrypt(sessionKeyEncrypted)        
     
@@ -60,7 +59,7 @@ class Client(threading.Thread):
             self.generateKey()
             print "Public and Private-key generation successful! \n"
             # sock.send("!key%s"  % self.publicKey)
-            sock.send(self.publicKey)
+            sock.send("!key" + self.publicKey)
             print "Public-key sent to server, waiting for session-key ... \n"
             firstMessage = sock.recv(1024)
             print firstMessage
