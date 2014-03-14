@@ -21,6 +21,12 @@ class Server(threading.Thread):
     #     rsaObjectImpl = RSA.RSAImplementation.importKey(publicKey)
     #     rsaObject = RSA._RSAobj.__init__(rsaObjectImpl, publicKey)
     #     return rsaObject.encrypt(sessionKey)
+
+    def encryptSessionKey(self, sessionKey, publicKey):
+        rsakey = RSA.importKey(self.publicKey)
+        raw_cipher_data = b64decode(sessionKey)
+        encrypted = rsakey.encrypt(raw_cipher_data)
+        return encrypted     
     
 
     # encryptes the message with AES
