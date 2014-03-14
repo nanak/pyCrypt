@@ -5,6 +5,8 @@ import string
 import random
 
 from Crypto.Cipher.AES import AESCipher
+from Crypto.PublicKey import RSA
+
 
 # socket tut: http://pymotw.com/2/socket/tcp.html
 
@@ -14,6 +16,12 @@ class Server(threading.Thread):
 
     def genSessionKey(self, size=6, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for x in range(size))
+
+    # def encryptSessionKey(self, publicKey, sessionKey):
+    #     rsaObjectImpl = RSA.RSAImplementation.importKey(publicKey)
+    #     rsaObject = RSA._RSAobj.__init__(rsaObjectImpl, publicKey)
+    #     return rsaObject.encrypt(sessionKey)
+    
 
     # encryptes the message with AES
     # cipher-text is the sessionkey
