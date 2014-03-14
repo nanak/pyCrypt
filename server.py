@@ -14,7 +14,7 @@ class Server(threading.Thread):
 
     sessionKey = ""
 
-    def genSessionKey(self, size=6, chars=string.ascii_uppercase + string.digits):
+    def genSessionKey(self, size=32, chars=string.ascii_uppercase + string.digits):
         return ''.join(random.choice(chars) for x in range(size))
 
     # def encryptSessionKey(self, publicKey, sessionKey):
@@ -23,9 +23,9 @@ class Server(threading.Thread):
     #     return rsaObject.encrypt(sessionKey)
 
     def encryptSessionKey(self, sessionKey, publicKey):
-        rsakey = RSA.importKey(self.publicKey)
-        raw_cipher_data = b64decode(sessionKey)
-        encrypted = rsakey.encrypt(raw_cipher_data)
+        rsakey = RSA.importKey(publicKey)
+        # raw_cipher_data = b64decode(sessionKey)
+        encrypted = rsakey.encrypt(sessionKey, "muh")
         return encrypted     
     
 
@@ -62,17 +62,23 @@ class Server(threading.Thread):
                 while True:
                     data = connection.recv(1024)
                     print "received '%s'" % data
-                    if data.startswith("!key"):
+                    cache =  data.split(" ", 1)
+                    print cache[0]
+                    if cache[0] == "!key":
                         if data:
                             print "sending session key to the client"
-                            connection.sendall(self.genSessionKey()) #TODO: generate session key and encrypt it with the received private key
+                            print len(cache)
+                            sessionKeyy=self.genSessionKey()
+                            print sessionKeyy
+                            message = self.encryptSessionKey(sessionKeyy, cache[1])
+                            print self.sessionKey
+                            connection.sendall(message[0])
+                            # break
                         else:
                             print "no more data from", client_address
-                            break
+                            # break
                     elif data.startswith("!crypt"):
-                        pass
-                    elif data.startswith("!plain"):
-                        pass
+                        print "muh"
                     else:
                         pass
             
