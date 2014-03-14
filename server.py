@@ -33,7 +33,7 @@ class Server(threading.Thread):
     def run(self):
         active = True
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = ('localhost', 10000)
+        server_address = ('127.0.0.1', 10000)
         sock.bind(server_address)
         # Listen for incoming connections
         sock.listen(1)
