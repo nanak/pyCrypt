@@ -40,9 +40,10 @@ class Client(threading.Thread):
     # decryptes the session key which is reveived from the server
     # decryption is done with private-key (RSA)
     def decryptSessionKey(self, sessionKeyEncrypted):
-        rsaObjectImpl = RSA.RSAImplementation.importKey(self.publicKey)
-        rsaObject = RSA._RSAobj.__init__(rsaObjectImpl, self.privateKey)
-        self.sessionKey = rsaObject.decrypt(sessionKeyEncrypted)        
+        rsakey = RSA.importKey(self.publicKey)
+        raw_cipher_data = b64decode(sessionKeyEncrypted)
+        decrypted = rsakey.decrypt(raw_cipher_data)
+        return decrypted        
     
     # define the behaviour for the thread
     def run(self):
